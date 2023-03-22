@@ -153,10 +153,11 @@ def build_training_data(
     test_batch_size,
     n=0,
     flattened=True,
+    data_augmentation=False,
 ):
     """Covert the audio samples into training data"""
 
-    train_data = SpectrogramDataset(train_df, n=n, flattened=flattened)
+    train_data = SpectrogramDataset(train_df, n=n, flattened=flattened, data_augmentation=data_augmentation)
     train_pr = DataLoader(
         train_data, batch_size=train_batch_size, shuffle=True, num_workers=2
     )
@@ -174,22 +175,19 @@ def build_training_data(
     return train_pr, valid_pr, test_pr
 
 
-def start(cnn=False, use_contrastive_loss=False):
+def start(cnn=False, use_contrastive_loss=False, data_augmentation=False):
     if cnn:
         # normalize data with n=15 for Deep CNN model
         print("Preparing Data for Deep CNN!")
         train_loader, valid_loader, test_loader = build_training_data(
-            speaker_train_df, speaker_valid_df, speaker_test_df, 32, 32, 32, n=15
+            speaker_train_df, speaker_valid_df, speaker_test_df, 32, 32, 32, n=15, data_augmentation=data_augmentation
         )
 
         CnnModel = CNN()
 
         print("Num Parameters:", sum([p.numel() for p in CnnModel.parameters()]))
         CnnModel.apply(init_weights)
-        if use_contrastive_loss:
-            criterion = contrastive_loss
-        else:
-            criterion = torch.nn.CrossEntropyLoss()
+        criterion = torch.nn.CrossEntropyLoss()
         optimizer = torch.optim.Adam(CnnModel.parameters(), weight_decay=1e-4)
 
         num_epochs = 100
@@ -203,14 +201,13 @@ def start(cnn=False, use_contrastive_loss=False):
         )
         test(CnnModel, test_loader, verbose=True, verbose_report=True)
 
-        t_sne_evaluation(CnnModel, test_loader, device)
-
         plt.plot(accs)
         plt.title("Validation Accuracy CNN")
         plt.xlabel("# Epochs")
         plt.ylabel("Accuracy (%)")
         plt.show()
-    else:
+
+    elif not cnn:
 
         print("Preparing Data for Audio Transformer!")
         at_train_loader, at_valid_loader, at_test_loader = build_training_data(
@@ -222,13 +219,12 @@ def start(cnn=False, use_contrastive_loss=False):
             32,
             15,
             flattened=False,
+            data_augmentation = data_augmentation
         )
 
         AudioRNNModel = RNNModel()
-        if use_contrastive_loss:
-            ARCriterion = contrastive_loss
-        else:
-            ARCriterion = torch.nn.CrossEntropyLoss()
+        print("Num Parameters:", sum([p.numel() for p in AudioRNNModel.parameters()]))
+        ARCriterion = torch.nn.CrossEntropyLoss()
         AROptimizer = torch.optim.Adam(AudioRNNModel.parameters(), weight_decay=1e-4)
 
         ARaccs = train(
@@ -248,7 +244,40 @@ def start(cnn=False, use_contrastive_loss=False):
         plt.ylabel("Accuracy (%)")
         plt.show()
 
-        t_sne_evaluation(AudioRNNModel, at_test_loader, device)
+    elif cnn and use_contrastive_loss:
+        print("Preparing Data for Audio Transformer!")
+        at_train_loader, at_valid_loader, at_test_loader = build_training_data(
+            speaker_train_df,
+            speaker_valid_df,
+            speaker_test_df,
+            32,
+            32,
+            32,
+            15,
+            flattened=False,
+        )
+
+        AudioRNNModel = RNNModel()
+        print("Num Parameters:", sum([p.numel() for p in AudioRNNModel.parameters()]))
+        ARCriterion = torch.nn.CrossEntropyLoss()
+        AROptimizer = torch.optim.Adam(AudioRNNModel.parameters(), weight_decay=1e-4)
+
+        ARaccs = train(
+            AudioRNNModel,
+            ARCriterion,
+            at_train_loader,
+            at_valid_loader,
+            AROptimizer,
+            num_epochs=100,
+        )
+
+        test(AudioRNNModel, at_test_loader, verbose=True, verbose_report=True)
+
+        plt.plot(ARaccs)
+        plt.title("Validation Accuracy RNN")
+        plt.xlabel("# Epochs")
+        plt.ylabel("Accuracy (%)")
+        plt.show()
 
 
 if __name__ == "__main__":
@@ -266,5 +295,6 @@ if __name__ == "__main__":
 
     start(cnn=True)
     start(cnn=False)
+    start(cnn=True, data_augmentation=True)
+    start(cnn=False, data_augmentation=True)
     start(cnn=True, use_contrastive_loss=True)
-    start(cnn=False, use_contrastive_loss=True)
