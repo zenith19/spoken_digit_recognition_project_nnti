@@ -78,7 +78,7 @@ def pitch_shifting(wave_file: str):
     - shifted_samples (List): The pitch-shifted audio waveform (shape: [1, num_samples])
     """
 
-    waveform, sr = librosa.load(wave_file, sr=SAMPLING_RATE)
+    waveform, sr = torchaudio.load(wave_file)
     waveform_shift = pitch_transform(waveform)
 
     return waveform_shift.numpy()

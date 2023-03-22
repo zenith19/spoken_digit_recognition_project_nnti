@@ -262,7 +262,7 @@ def start(cnn=False, use_contrastive_loss=False, data_augmentation=False):
 
     elif not cnn:
 
-        print("Preparing Data for Audio Transformer!")
+        print("Preparing Data for Audio RNN LSTM!")
         at_train_loader, at_valid_loader, at_test_loader = build_training_data(
             speaker_train_df,
             speaker_valid_df,
@@ -340,8 +340,8 @@ if __name__ == "__main__":
         sdr_df, speaker="george"
     )
 
-    start(cnn=True)
-    start(cnn=False)
-    start(cnn=True, data_augmentation=True)
+    # start(cnn=True) # Training Done
+    # start(cnn=False) # Training Done
+    # start(cnn=True, data_augmentation=True)
     start(cnn=False, data_augmentation=True)
-    start(cnn=True, use_contrastive_loss=True)
+    # start(cnn=True, use_contrastive_loss=True) # Training Done
