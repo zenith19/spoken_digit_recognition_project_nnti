@@ -52,7 +52,7 @@ def frequency_masking(melspec, freq_mask_param=10, num_masks=1):
         f0 = np.random.randint(0, melspec.shape[0] - f)
 
         # Apply mask
-        masked_melspec[f0 : f0 + f, :] = 0
+        masked_melspec[f0: f0 + f, :] = 0
 
     return masked_melspec
 
@@ -78,7 +78,7 @@ def pitch_shifting(wave_file: str):
     - shifted_samples (List): The pitch-shifted audio waveform (shape: [1, num_samples])
     """
 
-    waveform, sr = torchaudio.load(wave_file, normalize=True)
+    waveform, sr = librosa.load(wave_file, sr=SAMPLING_RATE)
     waveform_shift = pitch_transform(waveform)
 
     return waveform_shift.numpy()
@@ -161,6 +161,7 @@ class SpectrogramDataset(Dataset):
 
         for index in df.index:
             row = df.loc[index]
+            curr_label = row.label
             file_path = get_audio_path(row)
             spectrogram = get_mel_spectrogram(file_path)
             if data_augmentation and not use_contrastive_loss:
@@ -173,7 +174,7 @@ class SpectrogramDataset(Dataset):
                         augmented_pitch_spectrogram, n, flattened
                     )
                 self.data.append(augmented_pitch_spectrogram)
-                self.labels.append(row.label)
+                self.labels.append(curr_label)
 
             if data_augmentation and spectrogram.ndim == 2:
                 augmented_spectrogram = apply_frequency_transforms(spectrogram)
@@ -182,14 +183,14 @@ class SpectrogramDataset(Dataset):
                         augmented_spectrogram, n, flattened=flattened
                     )
                 self.data.append(augmented_spectrogram)
-                self.labels.append(row.label)
+                self.labels.append(curr_label)
             if not use_contrastive_loss:
                 if n:
                     spectrogram = downsample_spectrogram(
                         spectrogram, n, flattened=flattened
                     )
                 self.data.append(spectrogram)
-                self.labels.append(row.label)
+                self.labels.append(curr_label)
 
     def __len__(self):
         return len(self.data)
