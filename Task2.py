@@ -1,4 +1,3 @@
-import os
 import time
 
 import pandas as pd
@@ -109,10 +108,6 @@ def train(model, criterion, train_loader, validation_loader, optimizer, num_epoc
                 epoch + 1, ema_loss, tock - tick
             ),
         )
-        torch.save(model.state_dict(), f"saved_models/model_{epoch}.ckpt")
-        print("Model Saved!")
-        if os.path.isfile(f"saved_models/model_{epoch - 1}.ckpt"):
-            os.remove(f"saved_models/model_{epoch - 1}.ckpt")
     return accs
 
 

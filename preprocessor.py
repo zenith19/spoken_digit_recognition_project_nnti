@@ -5,6 +5,7 @@ import numpy as np
 import torch
 from sklearn import preprocessing
 import torchaudio
+import torch.nn.functional as F
 import random
 from torch.utils.data import Dataset
 
@@ -12,6 +13,25 @@ SAMPLING_RATE = 8000  # This value is determined by the wav file, DO NOT CHANGE
 warnings.filterwarnings("ignore")
 random_step = random.randint(-4, 4)
 pitch_transform = torchaudio.transforms.PitchShift(SAMPLING_RATE, random_step)
+
+
+class ContrastiveLoss(torch.nn.Module):
+    def __init__(self, margin=1.0):
+        super(ContrastiveLoss, self).__init__()
+        self.margin = margin
+
+    def forward(self, output1, output2, target):
+        # Convert target to one-hot encoding
+        target_onehot = torch.zeros_like(output1)
+        target_onehot.scatter_(1, target.unsqueeze(1), 1)
+
+        # Compute the contrastive loss
+        euclidean_distance = F.pairwise_distance(output1, output2)
+        loss_contrastive = torch.mean(
+            (1 - target_onehot) * torch.square(euclidean_distance)
+            + target_onehot * torch.square(torch.clamp(self.margin - euclidean_distance, min=0.0))
+        )
+        return loss_contrastive
 
 
 def frequency_masking(melspec, freq_mask_param=10, num_masks=1):

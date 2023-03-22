@@ -1,4 +1,3 @@
-import os
 import time
 
 import pandas as pd
@@ -6,9 +5,8 @@ import torch
 
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from models import CNN, RNNModel
-from post_model_processing import t_sne_evaluation
-from preprocessor import SpectrogramDataset
+from models import CNN, RNNModel, CNNContrastive
+from preprocessor import SpectrogramDataset, ContrastiveLoss
 from sklearn.metrics import accuracy_score
 
 import matplotlib.pyplot as plt
@@ -118,10 +116,55 @@ def train(model, criterion, train_loader, validation_loader, optimizer, num_epoc
                 epoch + 1, ema_loss, tock - tick
             ),
         )
-        torch.save(model.state_dict(), f"saved_models/model_{epoch}.ckpt")
-        print("Model Saved!")
-        if os.path.isfile(f"saved_models/model_{epoch - 1}.ckpt"):
-            os.remove(f"saved_models/model_{epoch - 1}.ckpt")
+    return accs
+
+
+def train_w_cl(model, criterion, train_loader, validation_loader, optimizer, num_epochs):
+    """Simple training loop for a PyTorch model."""
+
+    (cl_train_loader, actual_train_loader) = train_loader
+
+    # Move model to the device (CPU or GPU).
+    model.to(device)
+
+    accs = []
+    # Exponential moving average of the loss.
+    ema_loss = None
+
+    #     print('----- Training Loop -----')
+    # Loop over epochs.
+    for epoch in range(num_epochs):
+        tick = time.time()
+        model.train()
+        # Loop over data.
+        for batch_idx, ((features1, target), (features2, target2)) in tqdm(
+            enumerate(zip(cl_train_loader, actual_train_loader)),
+            total=len(actual_train_loader),
+            desc="Training",
+        ):
+            # Forward pass.
+            output1, output2 = model(features1.to(device), features2.to(device))
+            loss = criterion(output1.to(device), output2.to(device), target.to(device))
+
+            # Backward pass.
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+            if ema_loss is None:
+                ema_loss = loss.item()
+            else:
+                ema_loss += (loss.item() - ema_loss) * 0.01
+
+        tock = time.time()
+        acc = test(model, validation_loader, verbose=True)
+        accs.append(acc)
+        # Print out progress the end of epoch.
+        print(
+            "Epoch: {} \tLoss: {:.6f} \t Time taken: {:.6f} seconds".format(
+                epoch + 1, ema_loss, tock - tick
+            ),
+        )
     return accs
 
 
@@ -159,17 +202,17 @@ def build_training_data(
 
     train_data = SpectrogramDataset(train_df, n=n, flattened=flattened, data_augmentation=data_augmentation)
     train_pr = DataLoader(
-        train_data, batch_size=train_batch_size, shuffle=True, num_workers=2
+        train_data, batch_size=train_batch_size, shuffle=False, num_workers=2
     )
 
     valid_data = SpectrogramDataset(valid_df, n=n, flattened=flattened)
     valid_pr = DataLoader(
-        valid_data, batch_size=val_batch_size, shuffle=True, num_workers=2
+        valid_data, batch_size=val_batch_size, shuffle=False, num_workers=2
     )
 
     test_data = SpectrogramDataset(test_df, n=n, flattened=flattened)
     test_pr = DataLoader(
-        test_data, batch_size=test_batch_size, shuffle=True, num_workers=2
+        test_data, batch_size=test_batch_size, shuffle=False, num_workers=2
     )
 
     return train_pr, valid_pr, test_pr
@@ -219,7 +262,7 @@ def start(cnn=False, use_contrastive_loss=False, data_augmentation=False):
             32,
             15,
             flattened=False,
-            data_augmentation = data_augmentation
+            data_augmentation=data_augmentation
         )
 
         AudioRNNModel = RNNModel()
@@ -246,32 +289,24 @@ def start(cnn=False, use_contrastive_loss=False, data_augmentation=False):
 
     elif cnn and use_contrastive_loss:
         print("Preparing Data for Audio Transformer!")
-        at_train_loader, at_valid_loader, at_test_loader = build_training_data(
-            speaker_train_df,
-            speaker_valid_df,
-            speaker_test_df,
-            32,
-            32,
-            32,
-            15,
-            flattened=False,
-        )
+        cl_train_loader, cl_valid_loader, cl_test_loader = build_training_data(speaker_train_df, speaker_valid_df, speaker_test_df, 32, 32, 32, 15, data_augmentation=True)
+        train_loader, valid_loader, test_loader = build_training_data(speaker_train_df, speaker_valid_df, speaker_test_df, 32, 32, 32, 15)
 
-        AudioRNNModel = RNNModel()
-        print("Num Parameters:", sum([p.numel() for p in AudioRNNModel.parameters()]))
-        ARCriterion = torch.nn.CrossEntropyLoss()
-        AROptimizer = torch.optim.Adam(AudioRNNModel.parameters(), weight_decay=1e-4)
+        ContrastiveCNNModel = CNNContrastive()
+        print("Num Parameters:", sum([p.numel() for p in ContrastiveCNNModel.parameters()]))
+        cl_criterion = ContrastiveLoss()
+        cl_optimizer = torch.optim.Adam(ContrastiveCNNModel.parameters(), weight_decay=1e-4)
 
-        ARaccs = train(
-            AudioRNNModel,
-            ARCriterion,
-            at_train_loader,
-            at_valid_loader,
-            AROptimizer,
+        ARaccs = train_w_cl(
+            cl_criterion,
+            cl_criterion,
+            (cl_train_loader, train_loader),
+            cl_valid_loader,
+            cl_optimizer,
             num_epochs=100,
         )
 
-        test(AudioRNNModel, at_test_loader, verbose=True, verbose_report=True)
+        test(ContrastiveCNNModel, test_loader, verbose=True, verbose_report=True)
 
         plt.plot(ARaccs)
         plt.title("Validation Accuracy RNN")
