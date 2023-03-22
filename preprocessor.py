@@ -78,7 +78,7 @@ def pitch_shifting(wave_file: str):
     - shifted_samples (List): The pitch-shifted audio waveform (shape: [1, num_samples])
     """
 
-    waveform, sr = librosa.load(wave_file, sr=SAMPLING_RATE)
+    waveform, sr = torchaudio.load(wave_file, normalize=True)
     waveform_shift = pitch_transform(waveform)
 
     return waveform_shift.numpy()
@@ -164,7 +164,7 @@ class SpectrogramDataset(Dataset):
             curr_label = row.label
             file_path = get_audio_path(row)
             spectrogram = get_mel_spectrogram(file_path)
-            if data_augmentation and not use_contrastive_loss:
+            if data_augmentation and not use_contrastive_loss and 0 == 1:
                 changed_pitch_data = pitch_shifting(file_path)
                 augmented_pitch_spectrogram = extract_melspectrogram(
                     changed_pitch_data, SAMPLING_RATE, 13
