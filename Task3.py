@@ -6,6 +6,7 @@ import torch
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from models import CNN, RNNModel, CNNContrastive
+from post_model_processing import t_sne_evaluation
 from preprocessor import SpectrogramDataset, ContrastiveLoss
 from sklearn.metrics import accuracy_score
 
@@ -134,17 +135,24 @@ def train_w_cl(model, criterion, train_loader, validation_loader, optimizer, num
     #     print('----- Training Loop -----')
     # Loop over epochs.
     for epoch in range(num_epochs):
+        if epoch % 2 == 0:
+            cl_train_loader.sampler.shuffle = False
+            actual_train_loader.sampler.shuffle = False
+        else:
+            cl_train_loader.sampler.shuffle = True
+            actual_train_loader.sampler.shuffle = True
+
         tick = time.time()
         model.train()
         # Loop over data.
-        for batch_idx, ((features1, target), (features2, target2)) in tqdm(
+        for batch_idx, ((features1, target1), (features2, target2)) in tqdm(
             enumerate(zip(cl_train_loader, actual_train_loader)),
             total=len(actual_train_loader),
             desc="Training",
         ):
             # Forward pass.
             output1, output2 = model(features1.to(device), features2.to(device))
-            loss = criterion(output1.to(device), output2.to(device), target.to(device))
+            loss = criterion(output1.to(device), output2.to(device), target1.to(device), target2.to(device))
 
             # Backward pass.
             optimizer.zero_grad()
@@ -197,29 +205,31 @@ def build_training_data(
     n=0,
     flattened=True,
     data_augmentation=False,
+    use_contrastive_loss=False,
+    shuffle=True,
 ):
     """Covert the audio samples into training data"""
 
-    train_data = SpectrogramDataset(train_df, n=n, flattened=flattened, data_augmentation=data_augmentation)
+    train_data = SpectrogramDataset(train_df, n=n, flattened=flattened, data_augmentation=data_augmentation, use_contrastive_loss=use_contrastive_loss)
     train_pr = DataLoader(
-        train_data, batch_size=train_batch_size, shuffle=False, num_workers=2
+        train_data, batch_size=train_batch_size, shuffle=shuffle, num_workers=2
     )
 
     valid_data = SpectrogramDataset(valid_df, n=n, flattened=flattened)
     valid_pr = DataLoader(
-        valid_data, batch_size=val_batch_size, shuffle=False, num_workers=2
+        valid_data, batch_size=val_batch_size, shuffle=shuffle, num_workers=2
     )
 
     test_data = SpectrogramDataset(test_df, n=n, flattened=flattened)
     test_pr = DataLoader(
-        test_data, batch_size=test_batch_size, shuffle=False, num_workers=2
+        test_data, batch_size=test_batch_size, shuffle=shuffle, num_workers=2
     )
 
     return train_pr, valid_pr, test_pr
 
 
 def start(cnn=False, use_contrastive_loss=False, data_augmentation=False):
-    if cnn:
+    if cnn and not use_contrastive_loss:
         # normalize data with n=15 for Deep CNN model
         print("Preparing Data for Deep CNN!")
         train_loader, valid_loader, test_loader = build_training_data(
@@ -287,9 +297,11 @@ def start(cnn=False, use_contrastive_loss=False, data_augmentation=False):
         plt.ylabel("Accuracy (%)")
         plt.show()
 
+        t_sne_evaluation(AudioRNNModel, at_test_loader, device)
+
     elif cnn and use_contrastive_loss:
-        print("Preparing Data for Audio Transformer!")
-        cl_train_loader, cl_valid_loader, cl_test_loader = build_training_data(speaker_train_df, speaker_valid_df, speaker_test_df, 32, 32, 32, 15, data_augmentation=True)
+        print("Preparing Data for Audio RNN LSTM!")
+        cl_train_loader, cl_valid_loader, cl_test_loader = build_training_data(speaker_train_df, speaker_valid_df, speaker_test_df, 32, 32, 32, 15, data_augmentation=True, use_contrastive_loss=True)
         train_loader, valid_loader, test_loader = build_training_data(speaker_train_df, speaker_valid_df, speaker_test_df, 32, 32, 32, 15)
 
         ContrastiveCNNModel = CNNContrastive()
@@ -298,7 +310,7 @@ def start(cnn=False, use_contrastive_loss=False, data_augmentation=False):
         cl_optimizer = torch.optim.Adam(ContrastiveCNNModel.parameters(), weight_decay=1e-4)
 
         ARaccs = train_w_cl(
-            cl_criterion,
+            ContrastiveCNNModel,
             cl_criterion,
             (cl_train_loader, train_loader),
             cl_valid_loader,

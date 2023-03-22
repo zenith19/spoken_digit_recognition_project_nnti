@@ -20,10 +20,9 @@ class ContrastiveLoss(torch.nn.Module):
         super(ContrastiveLoss, self).__init__()
         self.margin = margin
 
-    def forward(self, output1, output2, target):
+    def forward(self, output1, output2, target1, target2):
         # Convert target to one-hot encoding
-        target_onehot = torch.zeros_like(output1)
-        target_onehot.scatter_(1, target.unsqueeze(1), 1)
+        target_onehot = torch.abs(target1 - target2).clamp(0, 1)
 
         # Compute the contrastive loss
         euclidean_distance = F.pairwise_distance(output1, output2)
@@ -79,7 +78,7 @@ def pitch_shifting(wave_file: str):
     - shifted_samples (List): The pitch-shifted audio waveform (shape: [1, num_samples])
     """
 
-    waveform, sample_rate = torchaudio.load(wave_file, normalize=True)
+    waveform, sr = librosa.load(wave_file, sr=SAMPLING_RATE)
     waveform_shift = pitch_transform(waveform)
 
     return waveform_shift.numpy()
@@ -149,7 +148,7 @@ def downsample_spectrogram(spectrogram, n=15, flattened=True):
 class SpectrogramDataset(Dataset):
     """Building spectrogram and add its label into an array"""
 
-    def __init__(self, df, n=0, flattened=True, data_augmentation=False):
+    def __init__(self, df, n=0, flattened=True, data_augmentation=False, use_contrastive_loss=False):
         """
         :param df: dataframe for the dataset
         :param n: number of length in a split
@@ -164,7 +163,7 @@ class SpectrogramDataset(Dataset):
             row = df.loc[index]
             file_path = get_audio_path(row)
             spectrogram = get_mel_spectrogram(file_path)
-            if data_augmentation:
+            if data_augmentation and not use_contrastive_loss:
                 changed_pitch_data = pitch_shifting(file_path)
                 augmented_pitch_spectrogram = extract_melspectrogram(
                     changed_pitch_data, SAMPLING_RATE, 13
@@ -184,12 +183,13 @@ class SpectrogramDataset(Dataset):
                     )
                 self.data.append(augmented_spectrogram)
                 self.labels.append(row.label)
-            if n:
-                spectrogram = downsample_spectrogram(
-                    spectrogram, n, flattened=flattened
-                )
-            self.data.append(spectrogram)
-            self.labels.append(row.label)
+            if not use_contrastive_loss:
+                if n:
+                    spectrogram = downsample_spectrogram(
+                        spectrogram, n, flattened=flattened
+                    )
+                self.data.append(spectrogram)
+                self.labels.append(row.label)
 
     def __len__(self):
         return len(self.data)

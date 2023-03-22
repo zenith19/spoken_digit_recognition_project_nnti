@@ -145,8 +145,9 @@ class CNNContrastive(nn.Module):
         x = self.norm(x)
         return x
 
-    def forward(self, x1, x2):
+    def forward(self, x1, x2=None):
+        if x2 is None:
+            return self.forward_pass(x1)
         y1 = self.forward_pass(x1)
         y2 = self.forward_pass(x2)
         return y1, y2
-

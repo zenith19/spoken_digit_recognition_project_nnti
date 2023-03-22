@@ -195,7 +195,7 @@ def start(cnn=False):
         plt.show()
     else:
 
-        print("Preparing Data for Audio Transformer!")
+        print("Preparing Data for Audio RNN LSTM!")
         at_train_loader, at_valid_loader, at_test_loader = build_training_data(
             train_df,
             valid_df,
