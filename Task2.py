@@ -16,15 +16,6 @@ from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
 
 
-def contrastive_loss(y_true, y_pred, margin=1.0):
-    y_true = y_true.float()
-    loss_contrastive = torch.mean(
-        (1 - y_true) * torch.square(y_pred)
-        + y_true * torch.square(torch.clamp(margin - y_pred, min=0.0))
-    )
-    return loss_contrastive
-
-
 def test(model, data_loader, verbose=False, verbose_report=False):
     """Measures the accuracy of a model on a data set."""
     # Make sure the model is in evaluation mode.
@@ -174,7 +165,7 @@ def build_training_data(
     return train_pr, valid_pr, test_pr
 
 
-def start(cnn=False, use_contrastive_loss=False):
+def start(cnn=False):
     if cnn:
         # normalize data with n=15 for Deep CNN model
         print("Preparing Data for Deep CNN!")
@@ -186,10 +177,7 @@ def start(cnn=False, use_contrastive_loss=False):
 
         print("Num Parameters:", sum([p.numel() for p in CnnModel.parameters()]))
         CnnModel.apply(init_weights)
-        if use_contrastive_loss:
-            criterion = contrastive_loss
-        else:
-            criterion = torch.nn.CrossEntropyLoss()
+        criterion = torch.nn.CrossEntropyLoss()
         optimizer = torch.optim.Adam(CnnModel.parameters(), weight_decay=1e-4)
 
         num_epochs = 100
@@ -227,10 +215,7 @@ def start(cnn=False, use_contrastive_loss=False):
         AudioRNNModel = RNNModel()
 
         print("Num Parameters:", sum([p.numel() for p in AudioRNNModel.parameters()]))
-        if use_contrastive_loss:
-            ARCriterion = contrastive_loss
-        else:
-            ARCriterion = torch.nn.CrossEntropyLoss()
+        ARCriterion = torch.nn.CrossEntropyLoss()
         AROptimizer = torch.optim.Adam(AudioRNNModel.parameters(), weight_decay=1e-4)
 
         ARaccs = train(
