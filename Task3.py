@@ -259,6 +259,7 @@ def start(cnn=False, use_contrastive_loss=False, data_augmentation=False):
         plt.xlabel("# Epochs")
         plt.ylabel("Accuracy (%)")
         plt.show()
+        t_sne_evaluation(CnnModel, test_loader, device)
 
     elif not cnn:
 
@@ -340,8 +341,6 @@ if __name__ == "__main__":
         sdr_df, speaker="george"
     )
 
-    # start(cnn=True) # Training Done
-    # start(cnn=False) # Training Done
-    # start(cnn=True, data_augmentation=True)
-    start(cnn=False, data_augmentation=True)
-    # start(cnn=True, use_contrastive_loss=True) # Training Done
+    start(cnn=True)
+    start(cnn=True, data_augmentation=True)
+    start(cnn=True, use_contrastive_loss=True)
