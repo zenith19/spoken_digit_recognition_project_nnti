@@ -60,7 +60,7 @@ def frequency_masking(melspec, freq_mask_param=10, num_masks=1):
 def apply_frequency_transforms(mel_spectrogram):
     mel_spectrogram_tensor = torch.Tensor(mel_spectrogram)
     freq_masked_mel_spec = frequency_masking(mel_spectrogram_tensor)
-    freq_masked_mel_spec = torchaudio.transforms.FrequencyMasking(freq_mask_param=6)(
+    freq_masked_mel_spec = torchaudio.transforms.FrequencyMasking(freq_mask_param=5)(
         freq_masked_mel_spec
     )
     return freq_masked_mel_spec.numpy()
