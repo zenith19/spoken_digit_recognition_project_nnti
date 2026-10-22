@@ -1,0 +1,50 @@
+{
+  "task1_linear_n10": {
+    "dev": 44.06,
+    "test": 46.92
+  },
+  "task2_cnn": {
+    "dev": 72.84,
+    "test": 70.58
+  },
+  "task2_rnn": {
+    "dev": 66.4,
+    "test": 68.19
+  },
+  "task3_george_cnn": {
+    "dev": 52.92,
+    "test": 51.09
+  },
+  "task3_george_rnn": {
+    "dev": 48.09,
+    "test": 45.33
+  },
+  "task3_george_cnn_specaugment": {
+    "dev": 48.49,
+    "test": 50.1
+  },
+  "task3_george_cnn_pitch": {
+    "dev": 50.91,
+    "test": 48.31
+  },
+  "task3_george_cnn_both": {
+    "dev": 45.07,
+    "test": 43.74
+  },
+  "task3_george_cnn_contrastive_views_linear_probe": {
+    "dev": 23.94,
+    "test": 22.47
+  },
+  "task3_george_cnn_contrastive_views_finetune": {
+    "dev": 44.87,
+    "test": 43.74
+  },
+  "task3_george_cnn_contrastive_labels_linear_probe": {
+    "dev": 46.68,
+    "test": 43.14
+  },
+  "task3_george_cnn_contrastive_labels_finetune": {
+    "dev": 48.49,
+    "test": 44.53
+  }
+}
