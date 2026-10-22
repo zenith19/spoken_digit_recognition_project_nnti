@@ -1,0 +1,676 @@
+Device used: cpu
+Train and Test Split based on speaker!
+# Train Size: 500
+# Valid Size: 497
+# Test Size: 503
+===== task3_george_cnn =====
+Num Parameters: 420298
+Epoch: 1	Loss: 1.4227	Val acc: 10.1%	Time: 1.4s
+Epoch: 2	Loss: 0.4670	Val acc: 39.0%	Time: 1.1s
+Epoch: 3	Loss: 0.1335	Val acc: 40.6%	Time: 1.0s
+Epoch: 4	Loss: 0.0458	Val acc: 46.5%	Time: 1.1s
+Epoch: 5	Loss: 0.0234	Val acc: 38.0%	Time: 1.0s
+Epoch: 6	Loss: 0.0176	Val acc: 48.9%	Time: 1.0s
+Epoch: 7	Loss: 0.0114	Val acc: 45.7%	Time: 1.0s
+Epoch: 8	Loss: 0.0320	Val acc: 39.4%	Time: 1.0s
+Epoch: 9	Loss: 0.0490	Val acc: 34.6%	Time: 0.9s
+Epoch: 10	Loss: 0.0316	Val acc: 47.1%	Time: 1.0s
+Epoch: 11	Loss: 0.0188	Val acc: 39.2%	Time: 1.0s
+Epoch: 12	Loss: 0.0222	Val acc: 49.5%	Time: 1.0s
+Epoch: 13	Loss: 0.0249	Val acc: 33.6%	Time: 1.0s
+Epoch: 14	Loss: 0.0168	Val acc: 24.9%	Time: 1.0s
+Epoch: 15	Loss: 0.0408	Val acc: 26.2%	Time: 1.0s
+Epoch: 16	Loss: 0.0355	Val acc: 38.0%	Time: 1.0s
+Epoch: 17	Loss: 0.0136	Val acc: 49.3%	Time: 0.9s
+Epoch: 18	Loss: 0.0052	Val acc: 49.7%	Time: 1.0s
+Epoch: 19	Loss: 0.0023	Val acc: 49.9%	Time: 1.0s
+Epoch: 20	Loss: 0.0015	Val acc: 48.3%	Time: 1.0s
+Epoch: 21	Loss: 0.0012	Val acc: 46.9%	Time: 0.9s
+Epoch: 22	Loss: 0.0014	Val acc: 48.9%	Time: 0.9s
+Epoch: 23	Loss: 0.0013	Val acc: 49.1%	Time: 1.0s
+Epoch: 24	Loss: 0.0015	Val acc: 49.5%	Time: 0.9s
+Epoch: 25	Loss: 0.0011	Val acc: 49.5%	Time: 0.9s
+Epoch: 26	Loss: 0.0010	Val acc: 49.5%	Time: 0.9s
+Epoch: 27	Loss: 0.0009	Val acc: 52.9%	Time: 0.9s
+Epoch: 28	Loss: 0.0005	Val acc: 52.7%	Time: 0.9s
+Epoch: 29	Loss: 0.0005	Val acc: 51.7%	Time: 0.9s
+Epoch: 30	Loss: 0.0043	Val acc: 51.3%	Time: 0.9s
+Epoch: 31	Loss: 0.0022	Val acc: 41.0%	Time: 0.9s
+Epoch: 32	Loss: 0.0021	Val acc: 51.9%	Time: 0.9s
+Epoch: 33	Loss: 0.0019	Val acc: 46.7%	Time: 0.9s
+Epoch: 34	Loss: 0.0017	Val acc: 48.9%	Time: 0.9s
+Epoch: 35	Loss: 0.0538	Val acc: 16.7%	Time: 1.0s
+Epoch: 36	Loss: 0.0359	Val acc: 42.3%	Time: 0.9s
+Epoch: 37	Loss: 0.0182	Val acc: 35.8%	Time: 1.0s
+Early stopping, best val acc 52.9% at epoch 27
+----- task3_george_cnn | dev -----
+Accuracy: 52.92%
+Confusion matrix:
+[[35  0  0  0  0  0  0  7  0  5]
+ [ 0 38  0  0  2  0  0  1  4  0]
+ [14  0  0  0  2  0  1 29  0  0]
+ [ 0  0  0 38  0  2  1  0  4  9]
+ [ 5  2 28  0  6  0  8  5  0  0]
+ [ 0 37  1  0  0  7  0  2  2  1]
+ [ 0  0  0  5  0  0 37  5  3  4]
+ [ 0  0  0  0  0  0  0 52  1  0]
+ [ 0  0  0  0  0  0 10  1 33  0]
+ [ 0  4  0 10  0  8  0  9  2 17]]
+              precision    recall  f1-score   support
+
+           0      0.648     0.745     0.693        47
+           1      0.469     0.844     0.603        45
+           2      0.000     0.000     0.000        46
+           3      0.717     0.704     0.710        54
+           4      0.600     0.111     0.188        54
+           5      0.412     0.140     0.209        50
+           6      0.649     0.685     0.667        54
+           7      0.468     0.981     0.634        53
+           8      0.673     0.750     0.710        44
+           9      0.472     0.340     0.395        50
+
+    accuracy                          0.529       497
+   macro avg      0.511     0.530     0.481       497
+weighted avg      0.516     0.529     0.481       497
+
+----- task3_george_cnn | test -----
+Accuracy: 51.09%
+Confusion matrix:
+[[38  0  6  0  0  0  0  7  0  2]
+ [ 0 45  0  0  1  0  0  1  8  0]
+ [13  0  1  0  3  0  2 34  1  0]
+ [ 0  0  1 36  0  3  0  0  0  6]
+ [ 0  4 27  0  2  0  9  4  0  0]
+ [ 0 33  0  0  2  6  0  2  2  5]
+ [ 0  0  0  5  0  0 29  3  1  8]
+ [ 0  0  0  0  0  0  0 42  5  0]
+ [ 0  0  0  4  0  0  8  7 37  0]
+ [ 0  8  0  9  0  7  0  2  3 21]]
+              precision    recall  f1-score   support
+
+           0      0.745     0.717     0.731        53
+           1      0.500     0.818     0.621        55
+           2      0.029     0.019     0.022        54
+           3      0.667     0.783     0.720        46
+           4      0.250     0.043     0.074        46
+           5      0.375     0.120     0.182        50
+           6      0.604     0.630     0.617        46
+           7      0.412     0.894     0.564        47
+           8      0.649     0.661     0.655        56
+           9      0.500     0.420     0.457        50
+
+    accuracy                          0.511       503
+   macro avg      0.473     0.510     0.464       503
+weighted avg      0.473     0.511     0.465       503
+
+===== task3_george_rnn =====
+Num Parameters: 575882
+Epoch: 1	Loss: 2.2444	Val acc: 22.1%	Time: 8.8s
+Epoch: 2	Loss: 1.7947	Val acc: 20.5%	Time: 8.6s
+Epoch: 3	Loss: 1.1560	Val acc: 24.1%	Time: 8.2s
+Epoch: 4	Loss: 0.7508	Val acc: 36.8%	Time: 8.6s
+Epoch: 5	Loss: 0.4853	Val acc: 39.0%	Time: 8.6s
+Epoch: 6	Loss: 0.3659	Val acc: 42.7%	Time: 8.6s
+Epoch: 7	Loss: 0.2550	Val acc: 38.2%	Time: 8.7s
+Epoch: 8	Loss: 0.1907	Val acc: 40.0%	Time: 8.7s
+Epoch: 9	Loss: 0.1565	Val acc: 41.9%	Time: 8.8s
+Epoch: 10	Loss: 0.1352	Val acc: 43.3%	Time: 8.7s
+Epoch: 11	Loss: 0.1225	Val acc: 39.6%	Time: 8.6s
+Epoch: 12	Loss: 0.1459	Val acc: 37.4%	Time: 8.6s
+Epoch: 13	Loss: 0.1336	Val acc: 40.6%	Time: 8.4s
+Epoch: 14	Loss: 0.0918	Val acc: 44.7%	Time: 8.5s
+Epoch: 15	Loss: 0.0922	Val acc: 40.6%	Time: 8.7s
+Epoch: 16	Loss: 0.0804	Val acc: 39.0%	Time: 8.9s
+Epoch: 17	Loss: 0.1596	Val acc: 40.2%	Time: 8.8s
+Epoch: 18	Loss: 0.1018	Val acc: 44.7%	Time: 8.7s
+Epoch: 19	Loss: 0.0665	Val acc: 42.9%	Time: 8.6s
+Epoch: 20	Loss: 0.0387	Val acc: 47.1%	Time: 8.6s
+Epoch: 21	Loss: 0.0355	Val acc: 41.2%	Time: 8.7s
+Epoch: 22	Loss: 0.0322	Val acc: 43.3%	Time: 8.6s
+Epoch: 23	Loss: 0.0246	Val acc: 46.1%	Time: 8.6s
+Epoch: 24	Loss: 0.0184	Val acc: 45.9%	Time: 8.7s
+Epoch: 25	Loss: 0.0129	Val acc: 44.1%	Time: 8.9s
+Epoch: 26	Loss: 0.0109	Val acc: 45.9%	Time: 8.9s
+Epoch: 27	Loss: 0.0061	Val acc: 47.7%	Time: 8.7s
+Epoch: 28	Loss: 0.0074	Val acc: 46.7%	Time: 9.0s
+Epoch: 29	Loss: 0.0090	Val acc: 44.3%	Time: 9.0s
+Epoch: 30	Loss: 0.0418	Val acc: 37.8%	Time: 8.8s
+Epoch: 31	Loss: 0.0684	Val acc: 44.5%	Time: 8.1s
+Epoch: 32	Loss: 0.0986	Val acc: 42.1%	Time: 8.9s
+Epoch: 33	Loss: 0.0438	Val acc: 48.1%	Time: 8.8s
+Epoch: 34	Loss: 0.0245	Val acc: 46.1%	Time: 8.7s
+Epoch: 35	Loss: 0.0123	Val acc: 47.9%	Time: 8.7s
+Epoch: 36	Loss: 0.0092	Val acc: 47.3%	Time: 8.4s
+Epoch: 37	Loss: 0.0069	Val acc: 46.9%	Time: 9.0s
+Epoch: 38	Loss: 0.0046	Val acc: 46.9%	Time: 8.5s
+Epoch: 39	Loss: 0.0044	Val acc: 47.1%	Time: 8.4s
+Epoch: 40	Loss: 0.0039	Val acc: 47.1%	Time: 8.3s
+Epoch: 41	Loss: 0.0036	Val acc: 46.7%	Time: 8.8s
+Epoch: 42	Loss: 0.0031	Val acc: 46.7%	Time: 8.6s
+Epoch: 43	Loss: 0.0029	Val acc: 46.3%	Time: 8.8s
+Early stopping, best val acc 48.1% at epoch 33
+----- task3_george_rnn | dev -----
+Accuracy: 48.09%
+Confusion matrix:
+[[37  0  0  0  7  0  0  2  0  1]
+ [ 0 35  1  0  5  1  2  1  0  0]
+ [16  0  0  0  1  0  5 24  0  0]
+ [ 0  0  0 30  0  1  0  1  6 16]
+ [35  3  3  0  8  0  1  4  0  0]
+ [ 5  5  0  0  1 15 10  4  1  9]
+ [ 1  0  0  3  1  0 26 23  0  0]
+ [ 0  0  0  0  0  0  7 45  0  1]
+ [ 0  0  0  9  0  0 32  1  1  1]
+ [ 0  1  0  0  0  3  2  0  2 42]]
+              precision    recall  f1-score   support
+
+           0      0.394     0.787     0.525        47
+           1      0.795     0.778     0.787        45
+           2      0.000     0.000     0.000        46
+           3      0.714     0.556     0.625        54
+           4      0.348     0.148     0.208        54
+           5      0.750     0.300     0.429        50
+           6      0.306     0.481     0.374        54
+           7      0.429     0.849     0.570        53
+           8      0.100     0.023     0.037        44
+           9      0.600     0.840     0.700        50
+
+    accuracy                          0.481       497
+   macro avg      0.444     0.476     0.425       497
+weighted avg      0.448     0.481     0.430       497
+
+----- task3_george_rnn | test -----
+Accuracy: 45.33%
+Confusion matrix:
+[[41  0  0  0  4  0  1  7  0  0]
+ [ 1 39  0  0 11  1  3  0  0  0]
+ [17  0  1  0  4  0  7 25  0  0]
+ [ 0  0  0 20  0  5  0  0  8 13]
+ [27  4  0  0  7  0  4  4  0  0]
+ [ 5 10  0  0  0 15  9  2  0  9]
+ [ 0  0  0  4  0  0 28 14  0  0]
+ [ 0  0  0  1  0  0  7 37  0  2]
+ [ 0  0  0 13  0  0 38  3  1  1]
+ [ 0  6  0  0  0  4  1  0  0 39]]
+              precision    recall  f1-score   support
+
+           0      0.451     0.774     0.569        53
+           1      0.661     0.709     0.684        55
+           2      1.000     0.019     0.036        54
+           3      0.526     0.435     0.476        46
+           4      0.269     0.152     0.194        46
+           5      0.600     0.300     0.400        50
+           6      0.286     0.609     0.389        46
+           7      0.402     0.787     0.532        47
+           8      0.111     0.018     0.031        56
+           9      0.609     0.780     0.684        50
+
+    accuracy                          0.453       503
+   macro avg      0.492     0.458     0.400       503
+weighted avg      0.496     0.453     0.397       503
+
+===== task3_george_cnn_specaugment =====
+Num Parameters: 420298
+Epoch: 1	Loss: 1.9757	Val acc: 10.7%	Time: 1.0s
+Epoch: 2	Loss: 1.2567	Val acc: 32.4%	Time: 1.0s
+Epoch: 3	Loss: 0.6879	Val acc: 33.6%	Time: 1.0s
+Epoch: 4	Loss: 0.5252	Val acc: 39.2%	Time: 1.0s
+Epoch: 5	Loss: 0.4576	Val acc: 38.4%	Time: 1.0s
+Epoch: 6	Loss: 0.3740	Val acc: 39.4%	Time: 1.0s
+Epoch: 7	Loss: 0.2700	Val acc: 43.3%	Time: 1.0s
+Epoch: 8	Loss: 0.2265	Val acc: 40.0%	Time: 1.0s
+Epoch: 9	Loss: 0.2029	Val acc: 39.6%	Time: 1.1s
+Epoch: 10	Loss: 0.1799	Val acc: 48.5%	Time: 1.0s
+Epoch: 11	Loss: 0.2049	Val acc: 24.9%	Time: 1.0s
+Epoch: 12	Loss: 0.2028	Val acc: 27.0%	Time: 1.0s
+Epoch: 13	Loss: 0.1648	Val acc: 36.2%	Time: 1.0s
+Epoch: 14	Loss: 0.1473	Val acc: 39.4%	Time: 1.0s
+Epoch: 15	Loss: 0.1285	Val acc: 47.9%	Time: 0.9s
+Epoch: 16	Loss: 0.1892	Val acc: 23.5%	Time: 1.0s
+Epoch: 17	Loss: 0.1221	Val acc: 32.2%	Time: 0.9s
+Epoch: 18	Loss: 0.1036	Val acc: 41.4%	Time: 1.0s
+Epoch: 19	Loss: 0.1026	Val acc: 41.0%	Time: 0.9s
+Epoch: 20	Loss: 0.1280	Val acc: 37.0%	Time: 1.0s
+Early stopping, best val acc 48.5% at epoch 10
+----- task3_george_cnn_specaugment | dev -----
+Accuracy: 48.49%
+Confusion matrix:
+[[34  0  0  1  0  0  0  1  0 11]
+ [ 0 30  0  0  5  0  0  6  0  4]
+ [17  0  0  0  0  1  1 26  0  1]
+ [ 0  0  0 26  1  3  3  1  8 12]
+ [ 1  0 26  2 17  0  0  5  1  2]
+ [ 1 15  0  1  4 11  2  3  3 10]
+ [ 0  0  0  5  1  0 31 10  2  5]
+ [ 0  0  0  0  0  0  3 47  0  3]
+ [ 0  0  0  6  0  0 22  8  8  0]
+ [ 0  5  0  0  0  3  0  5  0 37]]
+              precision    recall  f1-score   support
+
+           0      0.642     0.723     0.680        47
+           1      0.600     0.667     0.632        45
+           2      0.000     0.000     0.000        46
+           3      0.634     0.481     0.547        54
+           4      0.607     0.315     0.415        54
+           5      0.611     0.220     0.324        50
+           6      0.500     0.574     0.534        54
+           7      0.420     0.887     0.570        53
+           8      0.364     0.182     0.242        44
+           9      0.435     0.740     0.548        50
+
+    accuracy                          0.485       497
+   macro avg      0.481     0.479     0.449       497
+weighted avg      0.486     0.485     0.454       497
+
+----- task3_george_cnn_specaugment | test -----
+Accuracy: 50.10%
+Confusion matrix:
+[[42  0  0  0  0  0  0  2  0  9]
+ [ 0 44  0  0  1  0  0  8  0  2]
+ [14  0  2  1  2  2  1 27  0  5]
+ [ 0  0  0 23  0  2  0  1 11  9]
+ [ 0  0 15  5 13  0  0  4  1  8]
+ [ 0 10  0  0  5 12  3  3  4 13]
+ [ 0  0  0  0  1  0 29  7  3  6]
+ [ 0  0  1  1  0  0  2 37  0  6]
+ [ 0  0  0  6  0  0 28 10 10  2]
+ [ 0  5  0  1  0  3  0  1  0 40]]
+              precision    recall  f1-score   support
+
+           0      0.750     0.792     0.771        53
+           1      0.746     0.800     0.772        55
+           2      0.111     0.037     0.056        54
+           3      0.622     0.500     0.554        46
+           4      0.591     0.283     0.382        46
+           5      0.632     0.240     0.348        50
+           6      0.460     0.630     0.532        46
+           7      0.370     0.787     0.503        47
+           8      0.345     0.179     0.235        56
+           9      0.400     0.800     0.533        50
+
+    accuracy                          0.501       503
+   macro avg      0.503     0.505     0.469       503
+weighted avg      0.501     0.501     0.467       503
+
+===== task3_george_cnn_pitch =====
+Num Parameters: 420298
+Epoch: 1	Loss: 1.5970	Val acc: 10.1%	Time: 0.9s
+Epoch: 2	Loss: 0.7452	Val acc: 38.6%	Time: 0.9s
+Epoch: 3	Loss: 0.3583	Val acc: 46.7%	Time: 0.9s
+Epoch: 4	Loss: 0.2574	Val acc: 50.9%	Time: 0.9s
+Epoch: 5	Loss: 0.1739	Val acc: 33.4%	Time: 0.9s
+Epoch: 6	Loss: 0.1759	Val acc: 41.9%	Time: 0.9s
+Epoch: 7	Loss: 0.1429	Val acc: 44.5%	Time: 0.9s
+Epoch: 8	Loss: 0.1518	Val acc: 41.4%	Time: 0.9s
+Epoch: 9	Loss: 0.1610	Val acc: 47.1%	Time: 0.9s
+Epoch: 10	Loss: 0.1487	Val acc: 47.9%	Time: 1.0s
+Epoch: 11	Loss: 0.1323	Val acc: 46.1%	Time: 0.9s
+Epoch: 12	Loss: 0.0918	Val acc: 48.9%	Time: 0.9s
+Epoch: 13	Loss: 0.0695	Val acc: 50.7%	Time: 1.0s
+Epoch: 14	Loss: 0.0628	Val acc: 45.5%	Time: 0.9s
+Early stopping, best val acc 50.9% at epoch 4
+----- task3_george_cnn_pitch | dev -----
+Accuracy: 50.91%
+Confusion matrix:
+[[41  0  0  1  0  0  0  0  0  5]
+ [ 0 26  0  0  4  1  0  1  6  7]
+ [ 6  0 13  0  0  0  2 24  1  0]
+ [ 0  0  0 35  0  0  1  2  2 14]
+ [ 0  1 36  0  2  0 15  0  0  0]
+ [ 1  2  0  4  4  8  7 13  2  9]
+ [ 0  0 10  6  0  0 31  4  0  3]
+ [ 0  0  5  0  0  0  1 46  0  1]
+ [ 0  0  6  3  0  0 15 14  5  1]
+ [ 0  2  0  0  0  1  0  0  1 46]]
+              precision    recall  f1-score   support
+
+           0      0.854     0.872     0.863        47
+           1      0.839     0.578     0.684        45
+           2      0.186     0.283     0.224        46
+           3      0.714     0.648     0.680        54
+           4      0.200     0.037     0.062        54
+           5      0.800     0.160     0.267        50
+           6      0.431     0.574     0.492        54
+           7      0.442     0.868     0.586        53
+           8      0.294     0.114     0.164        44
+           9      0.535     0.920     0.676        50
+
+    accuracy                          0.509       497
+   macro avg      0.529     0.505     0.470       497
+weighted avg      0.528     0.509     0.470       497
+
+----- task3_george_cnn_pitch | test -----
+Accuracy: 48.31%
+Confusion matrix:
+[[44  0  0  0  0  0  0  0  0  9]
+ [ 0 32  0  0  4  2  3  1  7  6]
+ [ 3  0 19  0  1  0  1 25  1  4]
+ [ 0  0  0 23  0  0  0  2  0 21]
+ [ 0  0 29  0  2  0 14  0  0  1]
+ [ 0  5  2  1  4  5 13 12  0  8]
+ [ 0  0  7  3  0  1 28  2  0  5]
+ [ 0  0  7  0  0  0  1 35  4  0]
+ [ 0  0  5  9  0  0 16 18  7  1]
+ [ 0  1  0  1  0  0  0  0  0 48]]
+              precision    recall  f1-score   support
+
+           0      0.936     0.830     0.880        53
+           1      0.842     0.582     0.688        55
+           2      0.275     0.352     0.309        54
+           3      0.622     0.500     0.554        46
+           4      0.182     0.043     0.070        46
+           5      0.625     0.100     0.172        50
+           6      0.368     0.609     0.459        46
+           7      0.368     0.745     0.493        47
+           8      0.368     0.125     0.187        56
+           9      0.466     0.960     0.627        50
+
+    accuracy                          0.483       503
+   macro avg      0.505     0.485     0.444       503
+weighted avg      0.511     0.483     0.447       503
+
+===== task3_george_cnn_both =====
+Num Parameters: 420298
+Epoch: 1	Loss: 2.0577	Val acc: 17.3%	Time: 1.0s
+Epoch: 2	Loss: 1.4485	Val acc: 32.6%	Time: 1.1s
+Epoch: 3	Loss: 1.0454	Val acc: 38.4%	Time: 1.0s
+Epoch: 4	Loss: 0.8178	Val acc: 33.4%	Time: 1.1s
+Epoch: 5	Loss: 0.6629	Val acc: 40.4%	Time: 1.0s
+Epoch: 6	Loss: 0.5750	Val acc: 45.1%	Time: 1.0s
+Epoch: 7	Loss: 0.5643	Val acc: 38.6%	Time: 1.0s
+Epoch: 8	Loss: 0.4739	Val acc: 44.5%	Time: 1.0s
+Epoch: 9	Loss: 0.4206	Val acc: 42.9%	Time: 1.0s
+Epoch: 10	Loss: 0.3981	Val acc: 37.6%	Time: 1.0s
+Epoch: 11	Loss: 0.3746	Val acc: 44.1%	Time: 1.0s
+Epoch: 12	Loss: 0.3813	Val acc: 41.0%	Time: 1.0s
+Epoch: 13	Loss: 0.4197	Val acc: 41.9%	Time: 1.0s
+Epoch: 14	Loss: 0.4036	Val acc: 36.6%	Time: 1.0s
+Epoch: 15	Loss: 0.3299	Val acc: 40.6%	Time: 1.0s
+Epoch: 16	Loss: 0.3160	Val acc: 41.9%	Time: 1.0s
+Early stopping, best val acc 45.1% at epoch 6
+----- task3_george_cnn_both | dev -----
+Accuracy: 45.07%
+Confusion matrix:
+[[45  0  0  0  0  0  0  1  0  1]
+ [ 0 25  0  0  5  1  4 10  0  0]
+ [10  0  2  0  1  1  1 31  0  0]
+ [ 0  0  0 16  0  5  4 16  3 10]
+ [ 9  2  9  1 20  0  4  9  0  0]
+ [ 1  2  0  0  3 13  6 20  0  5]
+ [ 0  0  0  7  0  0 18 27  0  2]
+ [ 0  1  0  0  0  0  2 50  0  0]
+ [ 0  0  0  7  0  0 16 18  2  1]
+ [ 0  0  0  0  0 12  0  3  2 33]]
+              precision    recall  f1-score   support
+
+           0      0.692     0.957     0.804        47
+           1      0.833     0.556     0.667        45
+           2      0.182     0.043     0.070        46
+           3      0.516     0.296     0.376        54
+           4      0.690     0.370     0.482        54
+           5      0.406     0.260     0.317        50
+           6      0.327     0.333     0.330        54
+           7      0.270     0.943     0.420        53
+           8      0.286     0.045     0.078        44
+           9      0.635     0.660     0.647        50
+
+    accuracy                          0.451       497
+   macro avg      0.484     0.447     0.419       497
+weighted avg      0.483     0.451     0.421       497
+
+----- task3_george_cnn_both | test -----
+Accuracy: 43.74%
+Confusion matrix:
+[[49  1  1  0  0  0  0  2  0  0]
+ [ 0 27  0  0  5  2  8 13  0  0]
+ [ 5  2  4  0  2  0  6 34  0  1]
+ [ 0  1  0 16  0  2  1 16  0 10]
+ [ 4  1  7  4 13  0  6 11  0  0]
+ [ 0  1  0  0  5 14  9 21  0  0]
+ [ 0  0  0  3  0  0 13 29  0  1]
+ [ 1  1  0  0  0  0  2 40  3  0]
+ [ 0  0  0 11  0  0 10 28  5  2]
+ [ 0  3  0  0  0  7  0  1  0 39]]
+              precision    recall  f1-score   support
+
+           0      0.831     0.925     0.875        53
+           1      0.730     0.491     0.587        55
+           2      0.333     0.074     0.121        54
+           3      0.471     0.348     0.400        46
+           4      0.520     0.283     0.366        46
+           5      0.560     0.280     0.373        50
+           6      0.236     0.283     0.257        46
+           7      0.205     0.851     0.331        47
+           8      0.625     0.089     0.156        56
+           9      0.736     0.780     0.757        50
+
+    accuracy                          0.437       503
+   macro avg      0.525     0.440     0.422       503
+weighted avg      0.533     0.437     0.424       503
+
+===== task3_george_cnn_contrastive =====
+Num Parameters: 445066
+Pre-train epoch: 1	Loss: 0.3700	Time: 1.4s
+Pre-train epoch: 2	Loss: 0.2508	Time: 1.3s
+Pre-train epoch: 3	Loss: 0.2141	Time: 1.2s
+Pre-train epoch: 4	Loss: 0.1713	Time: 1.2s
+Pre-train epoch: 5	Loss: 0.1557	Time: 1.2s
+Pre-train epoch: 6	Loss: 0.1389	Time: 1.1s
+Pre-train epoch: 7	Loss: 0.1216	Time: 1.2s
+Pre-train epoch: 8	Loss: 0.1136	Time: 1.1s
+Pre-train epoch: 9	Loss: 0.1039	Time: 1.2s
+Pre-train epoch: 10	Loss: 0.1044	Time: 1.1s
+Pre-train epoch: 11	Loss: 0.0969	Time: 1.1s
+Pre-train epoch: 12	Loss: 0.1008	Time: 1.1s
+Pre-train epoch: 13	Loss: 0.0801	Time: 1.1s
+Pre-train epoch: 14	Loss: 0.0719	Time: 1.1s
+Pre-train epoch: 15	Loss: 0.0666	Time: 1.2s
+Pre-train epoch: 16	Loss: 0.0631	Time: 1.2s
+Pre-train epoch: 17	Loss: 0.0585	Time: 1.2s
+Pre-train epoch: 18	Loss: 0.0587	Time: 1.2s
+Pre-train epoch: 19	Loss: 0.0569	Time: 1.1s
+Pre-train epoch: 20	Loss: 0.0522	Time: 1.1s
+Pre-train epoch: 21	Loss: 0.0552	Time: 1.1s
+Pre-train epoch: 22	Loss: 0.0504	Time: 1.1s
+Pre-train epoch: 23	Loss: 0.0507	Time: 1.1s
+Pre-train epoch: 24	Loss: 0.0499	Time: 1.1s
+Pre-train epoch: 25	Loss: 0.0531	Time: 1.1s
+Pre-train epoch: 26	Loss: 0.0478	Time: 1.1s
+Pre-train epoch: 27	Loss: 0.0481	Time: 1.1s
+Pre-train epoch: 28	Loss: 0.0460	Time: 1.1s
+Pre-train epoch: 29	Loss: 0.0476	Time: 1.1s
+Pre-train epoch: 30	Loss: 0.0461	Time: 1.1s
+Pre-train epoch: 31	Loss: 0.0430	Time: 1.3s
+Pre-train epoch: 32	Loss: 0.0445	Time: 1.8s
+Pre-train epoch: 33	Loss: 0.0469	Time: 2.0s
+Pre-train epoch: 34	Loss: 0.0469	Time: 1.8s
+Pre-train epoch: 35	Loss: 0.0439	Time: 1.2s
+Pre-train epoch: 36	Loss: 0.0428	Time: 1.2s
+Pre-train epoch: 37	Loss: 0.0406	Time: 1.3s
+Pre-train epoch: 38	Loss: 0.0421	Time: 1.3s
+Pre-train epoch: 39	Loss: 0.0415	Time: 1.2s
+Pre-train epoch: 40	Loss: 0.0402	Time: 1.2s
+Pre-train epoch: 41	Loss: 0.0396	Time: 1.2s
+Pre-train epoch: 42	Loss: 0.0390	Time: 1.2s
+Pre-train epoch: 43	Loss: 0.0423	Time: 1.2s
+Pre-train epoch: 44	Loss: 0.0397	Time: 1.3s
+Pre-train epoch: 45	Loss: 0.0403	Time: 1.2s
+Pre-train epoch: 46	Loss: 0.0377	Time: 1.2s
+Pre-train epoch: 47	Loss: 0.0414	Time: 1.3s
+Pre-train epoch: 48	Loss: 0.0397	Time: 1.3s
+Pre-train epoch: 49	Loss: 0.0381	Time: 1.2s
+Pre-train epoch: 50	Loss: 0.0444	Time: 1.3s
+Epoch: 1	Loss: 2.2792	Val acc: 10.1%	Time: 0.7s
+Epoch: 2	Loss: 2.2397	Val acc: 12.1%	Time: 0.6s
+Epoch: 3	Loss: 2.1833	Val acc: 15.5%	Time: 0.8s
+Epoch: 4	Loss: 2.1508	Val acc: 17.5%	Time: 0.7s
+Epoch: 5	Loss: 2.1122	Val acc: 18.7%	Time: 0.7s
+Epoch: 6	Loss: 2.0840	Val acc: 19.9%	Time: 0.6s
+Epoch: 7	Loss: 2.0373	Val acc: 21.3%	Time: 0.5s
+Epoch: 8	Loss: 1.9973	Val acc: 22.1%	Time: 0.5s
+Epoch: 9	Loss: 1.9652	Val acc: 20.9%	Time: 0.5s
+Epoch: 10	Loss: 1.9319	Val acc: 20.9%	Time: 0.5s
+Epoch: 11	Loss: 1.9316	Val acc: 20.9%	Time: 0.6s
+Epoch: 12	Loss: 1.8959	Val acc: 21.3%	Time: 0.5s
+Epoch: 13	Loss: 1.8824	Val acc: 21.3%	Time: 0.6s
+Epoch: 14	Loss: 1.8649	Val acc: 21.5%	Time: 0.6s
+Epoch: 15	Loss: 1.8298	Val acc: 22.1%	Time: 0.6s
+Epoch: 16	Loss: 1.8076	Val acc: 22.9%	Time: 0.6s
+Epoch: 17	Loss: 1.7811	Val acc: 22.9%	Time: 0.5s
+Epoch: 18	Loss: 1.7814	Val acc: 22.9%	Time: 0.5s
+Epoch: 19	Loss: 1.7580	Val acc: 22.7%	Time: 0.5s
+Epoch: 20	Loss: 1.7359	Val acc: 22.7%	Time: 0.6s
+Epoch: 21	Loss: 1.7190	Val acc: 23.9%	Time: 0.6s
+Epoch: 22	Loss: 1.7104	Val acc: 23.1%	Time: 0.5s
+Epoch: 23	Loss: 1.6852	Val acc: 22.5%	Time: 0.6s
+Epoch: 24	Loss: 1.6764	Val acc: 23.1%	Time: 0.6s
+Epoch: 25	Loss: 1.6709	Val acc: 23.5%	Time: 0.6s
+Epoch: 26	Loss: 1.6749	Val acc: 22.5%	Time: 0.6s
+Epoch: 27	Loss: 1.6613	Val acc: 23.9%	Time: 0.5s
+Epoch: 28	Loss: 1.6369	Val acc: 23.5%	Time: 0.6s
+Epoch: 29	Loss: 1.6420	Val acc: 23.5%	Time: 0.6s
+Epoch: 30	Loss: 1.6057	Val acc: 22.9%	Time: 0.6s
+Epoch: 31	Loss: 1.5936	Val acc: 23.7%	Time: 0.5s
+Early stopping, best val acc 23.9% at epoch 21
+----- task3_george_cnn_contrastive_views_linear_probe | dev -----
+Accuracy: 23.94%
+Confusion matrix:
+[[24  1 14  2  0  0  2  1  3  0]
+ [ 1  9  0 16 13  1  0  5  0  0]
+ [ 1  1 21  0  9  1  4  6  3  0]
+ [ 3  0  1 15 12  1  2 20  0  0]
+ [22  0  4 11 13  1  2  1  0  0]
+ [ 7  0  0  1  2  4  1 30  4  1]
+ [ 0  1  9 18  3  1  5 12  1  4]
+ [10  0  1 12  7  2  2 16  3  0]
+ [ 0  0  7 12  6  3  0 13  2  1]
+ [ 0  4  0 12  2  9  0 12  1 10]]
+              precision    recall  f1-score   support
+
+           0      0.353     0.511     0.417        47
+           1      0.562     0.200     0.295        45
+           2      0.368     0.457     0.408        46
+           3      0.152     0.278     0.196        54
+           4      0.194     0.241     0.215        54
+           5      0.174     0.080     0.110        50
+           6      0.278     0.093     0.139        54
+           7      0.138     0.302     0.189        53
+           8      0.118     0.045     0.066        44
+           9      0.625     0.200     0.303        50
+
+    accuracy                          0.239       497
+   macro avg      0.296     0.241     0.234       497
+weighted avg      0.292     0.239     0.231       497
+
+----- task3_george_cnn_contrastive_views_linear_probe | test -----
+Accuracy: 22.47%
+Confusion matrix:
+[[30  0 12  0  0  0  4  4  3  0]
+ [ 1 14  0 14 17  0  1  8  0  0]
+ [ 0  0 18  4 10  5  4 10  3  0]
+ [ 3  0  0 13 10  0  1 19  0  0]
+ [18  0  6 10  8  0  2  2  0  0]
+ [ 4  0  2  2  3  5  2 25  4  3]
+ [ 0  0  2 10  4  0  1 22  0  7]
+ [ 5  0  4  8 10  6  1 11  1  1]
+ [ 0  0  8 21  6  1  4 16  0  0]
+ [ 0  8  1  1  3  5  0 17  2 13]]
+              precision    recall  f1-score   support
+
+           0      0.492     0.566     0.526        53
+           1      0.636     0.255     0.364        55
+           2      0.340     0.333     0.336        54
+           3      0.157     0.283     0.202        46
+           4      0.113     0.174     0.137        46
+           5      0.227     0.100     0.139        50
+           6      0.050     0.022     0.030        46
+           7      0.082     0.234     0.122        47
+           8      0.000     0.000     0.000        56
+           9      0.542     0.260     0.351        50
+
+    accuracy                          0.225       503
+   macro avg      0.264     0.223     0.221       503
+weighted avg      0.271     0.225     0.225       503
+
+Epoch: 1	Loss: 1.3326	Val acc: 39.0%	Time: 1.2s
+Epoch: 2	Loss: 0.9700	Val acc: 34.8%	Time: 1.1s
+Epoch: 3	Loss: 0.7193	Val acc: 34.8%	Time: 1.1s
+Epoch: 4	Loss: 0.6210	Val acc: 33.8%	Time: 1.1s
+Epoch: 5	Loss: 0.5171	Val acc: 35.4%	Time: 1.1s
+Epoch: 6	Loss: 0.4821	Val acc: 34.8%	Time: 1.0s
+Epoch: 7	Loss: 0.4508	Val acc: 35.4%	Time: 1.1s
+Epoch: 8	Loss: 0.4654	Val acc: 32.2%	Time: 1.2s
+Epoch: 9	Loss: 0.4387	Val acc: 43.9%	Time: 1.2s
+Epoch: 10	Loss: 0.4056	Val acc: 37.8%	Time: 1.1s
+Epoch: 11	Loss: 0.3514	Val acc: 44.9%	Time: 1.1s
+Epoch: 12	Loss: 0.3329	Val acc: 38.4%	Time: 1.1s
+Epoch: 13	Loss: 0.2959	Val acc: 37.4%	Time: 1.1s
+Epoch: 14	Loss: 0.3430	Val acc: 32.4%	Time: 1.1s
+Epoch: 15	Loss: 0.2866	Val acc: 36.6%	Time: 1.1s
+Epoch: 16	Loss: 0.3181	Val acc: 37.8%	Time: 1.0s
+Epoch: 17	Loss: 0.3141	Val acc: 44.3%	Time: 1.1s
+Epoch: 18	Loss: 0.3761	Val acc: 40.6%	Time: 1.0s
+Epoch: 19	Loss: 0.3742	Val acc: 39.4%	Time: 1.0s
+Epoch: 20	Loss: 0.3099	Val acc: 37.8%	Time: 0.9s
+Epoch: 21	Loss: 0.2551	Val acc: 40.0%	Time: 0.9s
+Early stopping, best val acc 44.9% at epoch 11
+----- task3_george_cnn_contrastive_views_finetune | dev -----
+Accuracy: 44.87%
+Confusion matrix:
+[[36  0  1  0  0  0  0 10  0  0]
+ [ 0 29  0  6  4  0  0  3  1  2]
+ [12  0  6  1  4  0  0 23  0  0]
+ [ 0  0  0 26  1  4  5  2  3 13]
+ [ 3  1  6  1 23  0  0 20  0  0]
+ [ 1  0  0  1 10  7  2 22  1  6]
+ [ 0  0  0  5  6  0 21 20  0  2]
+ [ 0  1  1  1  2  0  0 48  0  0]
+ [ 0  0  0 11  0  0 14 12  7  0]
+ [ 0 12  0  5  1  5  0  7  0 20]]
+              precision    recall  f1-score   support
+
+           0      0.692     0.766     0.727        47
+           1      0.674     0.644     0.659        45
+           2      0.429     0.130     0.200        46
+           3      0.456     0.481     0.468        54
+           4      0.451     0.426     0.438        54
+           5      0.438     0.140     0.212        50
+           6      0.500     0.389     0.438        54
+           7      0.287     0.906     0.436        53
+           8      0.583     0.159     0.250        44
+           9      0.465     0.400     0.430        50
+
+    accuracy                          0.449       497
+   macro avg      0.498     0.444     0.426       497
+weighted avg      0.492     0.449     0.426       497
+
+----- task3_george_cnn_contrastive_views_finetune | test -----
+Accuracy: 43.74%
+Confusion matrix:
+[[37  0  0  0  0  0  0 16  0  0]
+ [ 0 28  0  9  6  2  0  7  0  3]
+ [ 6  0  8  4  9  0  1 26  0  0]
+ [ 0  0  0 25  0  9  0  2  4  6]
+ [ 2  0  6  1 18  0  1 18  0  0]
+ [ 0  1  0  0 10  8  4 20  0  7]
+ [ 1  2  1  1  9  0 12 18  0  2]
+ [ 0  0  2  3  3  0  0 39  0  0]
+ [ 0  0  0 15  0  0 17 11 13  0]
+ [ 1  5  0  0  0  8  0  3  1 32]]
+              precision    recall  f1-score   support
+
+           0      0.787     0.698     0.740        53
+           1      0.778     0.509     0.615        55
+           2      0.471     0.148     0.225        54
+           3      0.431     0.543     0.481        46
+           4      0.327     0.391     0.356        46
+           5      0.296     0.160     0.208        50
+           6      0.343     0.261     0.296        46
+           7      0.244     0.830     0.377        47
+           8      0.722     0.232     0.351        56
+           9      0.640     0.640     0.640        50
+
+    accuracy                          0.437       503
+   macro avg      0.504     0.441     0.429       503
+weighted avg      0.515     0.437     0.432       503
+

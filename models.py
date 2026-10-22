@@ -1,153 +1,120 @@
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.nn.utils.rnn import pack_padded_sequence
+
+
+def length_mask(x, lengths):
+    """(B, 1, T) mask of a (B, C, T) tensor that is 1 on real frames and 0 on padding."""
+    mask = torch.arange(x.shape[2], device=x.device)[None, :] < lengths[:, None].to(x.device)
+    return mask.unsqueeze(1).float()
+
+
+def masked_mean(x, lengths):
+    """Mean over the time axis of a (B, C, T) tensor, ignoring padded frames."""
+    mask = length_mask(x, lengths)
+    return (x * mask).sum(dim=2) / mask.sum(dim=2).clamp(min=1)
+
+
+class ConvBlock(nn.Module):
+    """Two 1D convolutions over time (with batch norm and ReLU) followed by optional max pooling."""
+
+    def __init__(self, in_channels, out_channels, pool=True):
+        super(ConvBlock, self).__init__()
+        self.conv1 = nn.Conv1d(in_channels, out_channels, 3, padding=1)
+        self.bn1 = nn.BatchNorm1d(out_channels)
+        self.conv2 = nn.Conv1d(out_channels, out_channels, 3, padding=1)
+        self.bn2 = nn.BatchNorm1d(out_channels)
+        self.pool = pool
+
+    def forward(self, x, lengths):
+        # padded frames are reset to 0 after each convolution so they never leak into real frames
+        x = x * length_mask(x, lengths)
+        x = F.relu(self.bn1(self.conv1(x))) * length_mask(x, lengths)
+        x = F.relu(self.bn2(self.conv2(x))) * length_mask(x, lengths)
+        if self.pool:
+            x = F.max_pool1d(x, kernel_size=2)
+            lengths = lengths // 2
+        return x, lengths
 
 
 class CNN(nn.Module):
-    def __init__(
-        self,
-        num_classes=10,
-    ):
+    """
+    1D temporal CNN over a variable-length mel spectrogram: the mel bins are the
+    input channels and convolutions slide over time. A masked global average pool
+    turns any length into a fixed-size vector, so no downsampling is needed.
+    """
+
+    def __init__(self, num_mels=13, num_classes=10, hidden_size=128, dropout=0.3):
         super(CNN, self).__init__()
-        self.conv1 = nn.Conv1d(1, 64, 5)
-        self.bn1 = nn.BatchNorm1d(64)
-        self.conv2 = nn.Conv1d(64, 64, 5)
-        self.bn2 = nn.BatchNorm1d(64)
-        self.conv3 = nn.Conv1d(64, 64, 5)
-        self.bn3 = nn.BatchNorm1d(64)
-        self.conv4 = nn.Conv1d(64, 64, 5)
-        self.bn4 = nn.BatchNorm1d(64)
-        self.conv5 = nn.Conv1d(64, 128, 3)
-        self.bn5 = nn.BatchNorm1d(128)
-        self.conv6 = nn.Conv1d(128, 128, 3)
-        self.bn6 = nn.BatchNorm1d(128)
-        self.conv7 = nn.Conv1d(128, 128, 3)
-        self.bn7 = nn.BatchNorm1d(128)
-        self.conv8 = nn.Conv1d(128, 128, 3)
-        self.bn8 = nn.BatchNorm1d(128)
-        self.conv9 = nn.Conv1d(128, 256, 3)
-        self.bn9 = nn.BatchNorm1d(256)
-        self.conv10 = nn.Conv1d(256, 256, 3)
-        self.bn10 = nn.BatchNorm1d(256)
-        self.conv11 = nn.Conv1d(256, 256, 2)
-        self.bn11 = nn.BatchNorm1d(256)
-        self.conv12 = nn.Conv1d(256, 256, 2)
-        self.fc1 = nn.Linear(8704, 512)  # flatten
-        self.linear = nn.Linear(512, num_classes)
-        self.norm = nn.Softmax(dim=1)
+        self.blocks = nn.ModuleList(
+            [
+                ConvBlock(num_mels, 64),
+                ConvBlock(64, 128),
+                ConvBlock(128, 256, pool=False),
+            ]
+        )
+        self.fc1 = nn.Linear(256, hidden_size)
+        self.dropout = nn.Dropout(dropout)
+        self.classifier = nn.Linear(hidden_size, num_classes)
 
-    # all conv blocks
-    def convs(self, x):
-        x = F.relu(self.bn1(self.conv1(x)))
-        x = F.relu(self.bn2(self.conv2(x)))
-        x = F.relu(self.bn3(self.conv3(x)))
-        x = F.relu(self.bn4(self.conv4(x)))
-        x = F.max_pool1d(x, kernel_size=2)
-        x = F.relu(self.bn5(self.conv5(x)))
-        x = F.relu(self.bn6(self.conv6(x)))
-        x = F.relu(self.bn7(self.conv7(x)))
-        x = F.relu(self.bn8(self.conv8(x)))
-        x = F.max_pool1d(x, kernel_size=2)
-        x = F.relu(self.bn9(self.conv9(x)))
-        x = F.relu(self.bn10(self.conv10(x)))
-        x = F.relu(self.bn11(self.conv11(x)))
-        x = self.conv12(x)
-        x = x.view(x.size(0), -1)
+    def features(self, x, lengths):
+        """Output of the last non-linear layer, shape (B, hidden_size)."""
+        x = x.transpose(1, 2)  # (B, T, K) -> (B, K, T)
+        for block in self.blocks:
+            x, lengths = block(x, lengths)
+        x = masked_mean(x, lengths)
+        return F.relu(self.fc1(x))
 
-        return x
-
-    def forward(self, x, use_last_layer=False):
-        # Reshape the tensor to have shape [batch_size, input_channels, signal_length]
-        x = x.view(x.shape[0], 1, x.shape[1])
-        x = self.convs(x)
-        x = F.relu(self.fc1(x))
-        x = self.linear(x)
-        if use_last_layer:
-            x = self.norm(x)
-        return x
+    def forward(self, x, lengths):
+        return self.classifier(self.dropout(self.features(x, lengths)))
 
 
 class RNNModel(nn.Module):
-    def __init__(self):
+    """Bidirectional LSTM over a variable-length mel spectrogram, using packed sequences."""
+
+    def __init__(self, num_mels=13, num_classes=10, rnn_size=128, hidden_size=128, dropout=0.3):
         super(RNNModel, self).__init__()
-        self.rnn = nn.LSTM(input_size=13, hidden_size=256, batch_first=True)
-        self.fc1 = nn.Linear(256, 128)
-        self.fc2 = nn.Linear(128, 10)
-        self.norm = nn.Softmax(dim=1)
+        self.rnn = nn.LSTM(
+            input_size=num_mels,
+            hidden_size=rnn_size,
+            num_layers=2,
+            batch_first=True,
+            bidirectional=True,
+            dropout=dropout,
+        )
+        self.fc1 = nn.Linear(2 * rnn_size, hidden_size)
+        self.dropout = nn.Dropout(dropout)
+        self.classifier = nn.Linear(hidden_size, num_classes)
 
-    def forward(self, input, use_last_layer=True):
-        output, _ = self.rnn(input)
-        output = self.fc1(output[:, -1])
-        output = self.fc2(output)
-        if use_last_layer:
-            output = self.norm(output)
-        return output
+    def features(self, x, lengths):
+        """Output of the last non-linear layer, shape (B, hidden_size)."""
+        packed = pack_padded_sequence(x, lengths.cpu(), batch_first=True, enforce_sorted=False)
+        _, (hidden, _) = self.rnn(packed)
+        # final forward and backward states of the top layer
+        x = torch.cat((hidden[-2], hidden[-1]), dim=1)
+        return F.relu(self.fc1(x))
+
+    def forward(self, x, lengths):
+        return self.classifier(self.dropout(self.features(x, lengths)))
 
 
-class CNNContrastive(nn.Module):
-    def __init__(
-        self,
-        num_classes=10,
-    ):
-        super(CNNContrastive, self).__init__()
-        self.conv1 = nn.Conv1d(1, 64, 5)
-        self.bn1 = nn.BatchNorm1d(64)
-        self.conv2 = nn.Conv1d(64, 64, 5)
-        self.bn2 = nn.BatchNorm1d(64)
-        self.conv3 = nn.Conv1d(64, 64, 5)
-        self.bn3 = nn.BatchNorm1d(64)
-        self.conv4 = nn.Conv1d(64, 64, 5)
-        self.bn4 = nn.BatchNorm1d(64)
-        self.conv5 = nn.Conv1d(64, 128, 3)
-        self.bn5 = nn.BatchNorm1d(128)
-        self.conv6 = nn.Conv1d(128, 128, 3)
-        self.bn6 = nn.BatchNorm1d(128)
-        self.conv7 = nn.Conv1d(128, 128, 3)
-        self.bn7 = nn.BatchNorm1d(128)
-        self.conv8 = nn.Conv1d(128, 128, 3)
-        self.bn8 = nn.BatchNorm1d(128)
-        self.conv9 = nn.Conv1d(128, 256, 3)
-        self.bn9 = nn.BatchNorm1d(256)
-        self.conv10 = nn.Conv1d(256, 256, 3)
-        self.bn10 = nn.BatchNorm1d(256)
-        self.conv11 = nn.Conv1d(256, 256, 2)
-        self.bn11 = nn.BatchNorm1d(256)
-        self.conv12 = nn.Conv1d(256, 256, 2)
-        self.fc1 = nn.Linear(8704, 512)  # flatten
-        self.linear = nn.Linear(512, num_classes)
-        self.norm = nn.Softmax(dim=1)
+class ContrastiveModel(nn.Module):
+    """
+    Wraps an encoder (e.g. CNN) with a projection head that outputs L2-normalised
+    embeddings for the contrastive loss (as in SimCLR, Chen et al., 2020). After
+    pre-training, the encoder is used on its own for classification.
+    """
 
-    # all conv blocks
-    def convs(self, x):
-        x = F.relu(self.bn1(self.conv1(x)))
-        x = F.relu(self.bn2(self.conv2(x)))
-        x = F.relu(self.bn3(self.conv3(x)))
-        x = F.relu(self.bn4(self.conv4(x)))
-        x = F.max_pool1d(x, kernel_size=2)
-        x = F.relu(self.bn5(self.conv5(x)))
-        x = F.relu(self.bn6(self.conv6(x)))
-        x = F.relu(self.bn7(self.conv7(x)))
-        x = F.relu(self.bn8(self.conv8(x)))
-        x = F.max_pool1d(x, kernel_size=2)
-        x = F.relu(self.bn9(self.conv9(x)))
-        x = F.relu(self.bn10(self.conv10(x)))
-        x = F.relu(self.bn11(self.conv11(x)))
-        x = self.conv12(x)
-        x = x.view(x.size(0), -1)
+    def __init__(self, encoder, projection_size=64):
+        super(ContrastiveModel, self).__init__()
+        self.encoder = encoder
+        hidden_size = encoder.classifier.in_features
+        self.projection = nn.Sequential(
+            nn.Linear(hidden_size, hidden_size),
+            nn.ReLU(),
+            nn.Linear(hidden_size, projection_size),
+        )
 
-        return x
-
-    def forward_pass(self, x):
-        # Reshape the tensor to have shape [batch_size, input_channels, signal_length]
-        x = x.view(x.shape[0], 1, x.shape[1])
-        x = self.convs(x)
-        x = F.relu(self.fc1(x))
-        x = self.linear(x)
-        x = self.norm(x)
-        return x
-
-    def forward(self, x1, x2=None):
-        if x2 is None:
-            return self.forward_pass(x1)
-        y1 = self.forward_pass(x1)
-        y2 = self.forward_pass(x2)
-        return y1, y2
+    def forward(self, x, lengths):
+        return F.normalize(self.projection(self.encoder.features(x, lengths)), dim=1)
