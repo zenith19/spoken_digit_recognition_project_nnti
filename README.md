@@ -4,6 +4,8 @@ Deep learning models for recognizing spoken digits (0–9) from short audio clip
 
 Built with PyTorch on the [Free Spoken Digit Dataset](https://github.com/Jakobovski/free-spoken-digit-dataset) (3,000 recordings, 6 speakers, 8 kHz). Course project for *Neural Networks: Theory and Implementation* (NNTI), Saarland University.
 
+**Credits.** The original course submission (March 2023) was joint work: Zenith Biswas built the Task 1 baseline and wrote the report and presentation, and Enosh wrote most of the Task 2 and Task 3 code. In October 2026, Zenith Biswas fixed that code's bugs and re-implemented it, producing the version and results in this repository.
+
 ## Why speaker independence?
 
 Real-world ASR systems must work for speakers they were never trained on. This is especially relevant for low-resource languages, where annotated speech may exist for only one or two speakers. This project simulates that constraint in three steps:
