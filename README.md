@@ -74,7 +74,7 @@ Outputs go to `results/`: `results.json` (all accuracies), and per experiment a 
 
 ## Results
 
-Accuracy (%), seed 42, one run each. DEV and TEST are both 2 unseen speakers, about 500 clips each, so differences of 2–3 points are within run-to-run noise.
+Accuracy (%), seed 42, one run each. DEV and TEST are both 2 unseen speakers, about 500 clips each, so differences of 2–3 points are within run-to-run noise. DEV and TEST also share the same two speakers, and early stopping selects on DEV, so TEST is somewhat optimistic; leave-one-speaker-out evaluation would remove this bias.
 
 | Task | Experiment | Train speakers | DEV | TEST |
 |---|---|---|---|---|
